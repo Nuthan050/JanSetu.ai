@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JanSetu AI — DPI & Governance Prototype</title>
+<style>
+:root{
+  --bg:#f6f8fc; --card:#fff; --ink:#172033; --muted:#6b7280;
+  --line:#e5e9f2; --blue:#2563eb; --blue2:#1d4ed8; --green:#0f9d58;
+  --amber:#d97706; --red:#dc2626; --shadow:0 8px 30px rgba(30,50,90,.08);
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input{font:inherit}.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#101828;color:#dbe4f4;padding:22px 16px;position:fixed;inset:0 auto 0 0}
+.brand{display:flex;gap:11px;align-items:center;padding:8px 10px 28px;color:#fff;font-weight:800;font-size:19px}
+.logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#60a5fa,#2563eb);display:grid;place-items:center;font-weight:900}
+.nav{display:grid;gap:7px}.nav button{border:0;background:transparent;color:#aebbd0;text-align:left;padding:12px 13px;border-radius:10px;cursor:pointer}
+.nav button:hover,.nav button.active{background:#1d2a42;color:#fff}.sidefoot{position:absolute;bottom:20px;left:20px;right:20px;font-size:12px;color:#8190a8}
+.main{margin-left:250px;width:calc(100% - 250px);padding:28px 34px 50px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.eyebrow{color:var(--blue);font-weight:700;font-size:13px}.title{font-size:28px;font-weight:800;margin:4px 0}.subtitle{color:var(--muted);font-size:14px}
+.status{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);padding:9px 13px;border-radius:10px;font-size:13px}
+.dot{width:8px;height:8px;background:#22c55e;border-radius:50%}
+.grid{display:grid;gap:18px}.stats{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.4fr 1fr}.three{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.stat .label{color:var(--muted);font-size:13px}.stat .num{font-size:27px;font-weight:800;margin:8px 0 3px}.trend{font-size:12px;color:var(--green)}
+.section{margin-top:18px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sectionhead h2{font-size:17px;margin:0}.link{color:var(--blue);border:0;background:none;cursor:pointer;font-size:13px}
+.service{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line)}.service:last-child{border-bottom:0}
+.service h3{font-size:14px;margin:0 0 4px}.service p{font-size:12px;color:var(--muted);margin:0}.badge{font-size:11px;padding:5px 8px;border-radius:20px;background:#eef4ff;color:#2455b5}
+.ai{background:linear-gradient(135deg,#eef5ff,#f8fbff);border:1px solid #d8e6ff}.aihead{display:flex;justify-content:space-between;gap:12px}.spark{background:#2563eb;color:#fff;border-radius:10px;padding:8px 10px;font-size:12px}
+.insight{padding:13px 0;border-bottom:1px solid #dbe6f7}.insight:last-child{border-bottom:0}.insight strong{font-size:13px}.insight p{font-size:12px;color:#5f6b7a;line-height:1.55;margin:6px 0 0}
+.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--line);font-size:12px}.table th{color:var(--muted);font-weight:600}.priority{color:var(--red);font-weight:700}.medium{color:var(--amber);font-weight:700}.low{color:var(--green);font-weight:700}
+.btn{border:0;border-radius:9px;padding:9px 12px;background:var(--blue);color:white;cursor:pointer}.btn.secondary{background:#eef3fb;color:#26364f}.btn:hover{background:var(--blue2)}
+.progress{height:8px;background:#e9edf5;border-radius:10px;overflow:hidden;margin-top:10px}.bar{height:100%;background:#2563eb;border-radius:10px}
+.page{display:none}.page.active{display:block}
+.hero{padding:24px;background:linear-gradient(120deg,#13213c,#1e40af);color:#fff;border-radius:18px;margin-bottom:18px}.hero h1{margin:0 0 7px;font-size:25px}.hero p{margin:0;color:#d9e4ff;max-width:760px;line-height:1.55}
+.workflow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}.step{background:rgba(255,255,255,.09);padding:12px;border-radius:10px}.step b{font-size:12px}.step small{display:block;color:#c6d5f5;margin-top:4px}
+.formrow{display:flex;gap:10px;margin-top:15px}.formrow input{flex:1;border:1px solid var(--line);padding:11px 12px;border-radius:9px;outline:none}.formrow input:focus{border-color:#7aa6ff}
+.answer{margin-top:15px;padding:15px;border-radius:11px;background:#f7faff;border:1px solid #dce8ff;display:none}.answer strong{display:block;margin-bottom:7px}
+.kpi{display:flex;justify-content:space-between;align-items:end}.big{font-size:34px;font-weight:800}.mini{font-size:12px;color:var(--muted)}
+.toast{position:fixed;right:25px;bottom:25px;background:#111827;color:white;padding:12px 15px;border-radius:10px;display:none;box-shadow:var(--shadow);font-size:13px}
+@media(max-width:950px){.sidebar{width:205px}.main{margin-left:205px;width:calc(100% - 205px);padding:20px}.stats,.three{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}.workflow{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">J</div> JanSetu AI</div>
+  <div class="nav">
+    <button class="active" data-page="dashboard">◉ Overview</button>
+    <button data-page="citizen">◎ Citizen Services</button>
+    <button data-page="grievance">⚑ Grievance AI</button>
+    <button data-page="governance">▣ Governance Copilot</button>
+    <button data-page="analytics">◈ Impact Analytics</button>
+  </div>
+  <div class="sidefoot">Prototype • Track 1<br>AI for Digital Public Infrastructure & Governance</div>
+</aside>
+
+<main class="main">
+<header class="top">
+  <div><div class="eyebrow">TRACK 1 • DIGITAL PUBLIC INFRASTRUCTURE</div><div class="title">Governance command center</div><div class="subtitle">A consent-first AI layer connecting citizens, public services and government workflows.</div></div>
+  <div class="status"><span class="dot"></span> Systems operational</div>
+</header>
+
+<section id="dashboard" class="page active">
+  <div class="grid stats">
+    <div class="card stat"><div class="label">Applications processed</div><div class="num">18,426</div><div class="trend">↑ 12.4% this month</div></div>
+    <div class="card stat"><div class="label">Avg. resolution time</div><div class="num">2.8d</div><div class="trend">↓ 31% after AI triage</div></div>
+    <div class="card stat"><div class="label">Citizen satisfaction</div><div class="num">91%</div><div class="trend">↑ 6.2 pts</div></div>
+    <div class="card stat"><div class="label">AI decisions audited</div><div class="num">100%</div><div class="trend">Explainability enabled</div></div>
+  </div>
+
+  <div class="grid two section">
+    <div class="card">
+      <div class="sectionhead"><h2>Public service flow</h2><button class="link" onclick="toast('Demo data refreshed')">Refresh</button></div>
+      <div class="service"><div><h3>Income certificate</h3><p>1,248 applications • 94% auto-validated</p></div><span class="badge">On track</span></div>
+      <div class="service"><div><h3>Scholarship renewal</h3><p>3,806 applications • 88% complete</p></div><span class="badge">On track</span></div>
+      <div class="service"><div><h3>Housing assistance</h3><p>962 applications • 17 need review</p></div><span class="badge">Review</span></div>
+      <div class="service"><div><h3>Water connection</h3><p>624 applications • 2.1d average</p></div><span class="badge">On track</span></div>
+    </div>
+
+    <div class="card ai">
+      <div class="aihead"><div><div class="eyebrow">AI GOVERNANCE COPILOT</div><h2 style="margin:5px 0 0;font-size:18px">Today's recommended actions</h2></div><span class="spark">✦ Gemini</span></div>
+      <div class="insight"><strong>17 housing cases are stuck</strong><p>Most are missing the same income document. Send a single multilingual reminder rather than manual follow-ups.</p></div>
+      <div class="insight"><strong>Grievance cluster detected</strong><p>42 complaints mention delayed water connections in Ward 12. Route to the same service officer and attach common evidence.</p></div>
+      <div class="insight"><strong>Fairness check passed</strong><p>No material difference detected across the monitored demographic groups in the current sample. Continue monitoring before scaling.</p></div>
+    </div>
+  </div>
+
+  <div class="card section">
+    <div class="sectionhead"><h2>AI-triaged citizen requests</h2><button class="btn" onclick="showPage('grievance')">Open triage</button></div>
+    <table class="table"><thead><tr><th>ID</th><th>Request</th><th>AI category</th><th>Priority</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>#GS-1042</td><td>Water connection delayed</td><td>Utility</td><td class="priority">High</td><td>Assigned</td></tr>
+      <tr><td>#GS-1039</td><td>Scholarship payment not received</td><td>Education</td><td class="medium">Medium</td><td>Evidence requested</td></tr>
+      <tr><td>#GS-1035</td><td>Address correction</td><td>Identity / records</td><td class="low">Low</td><td>Auto-routed</td></tr>
+    </tbody></table>
+  </div>
+</section>
+
+<section id="citizen" class="page">
+  <div class="hero"><h1>Citizen Service Navigator</h1><p>One conversational entry point to discover public services, understand eligibility and track applications. The AI explains why it recommends a service and asks for consent before using connected data.</p>
+    <div class="workflow"><div class="step"><b>01 • Ask</b><small>Citizen describes a need</small></div><div class="step"><b>02 • Verify</b><small>Consent-based data check</small></div><div class="step"><b>03 • Apply</b><small>Prefill + submit</small></div><div class="step"><b>04 • Track</b><small>One status timeline</small></div></div>
+  </div>
+  <div class="grid two">
+    <div class="card"><h2 style="margin-top:0">Try the AI navigator</h2><p class="subtitle">Demo prompt: “I need help paying for my daughter's college.”</p>
+      <div class="formrow"><input id="citizenInput" value="I need help paying for my daughter's college"><button class="btn" onclick="askAI()">Ask AI</button></div>
+      <div id="aiAnswer" class="answer"><strong>Possible support: Education scholarship renewal</strong><div>Based on the stated need, this service may help with tuition support. Before checking eligibility, JanSetu would request consent to access the minimum required records.</div><div style="margin-top:12px"><button class="btn" onclick="toast('Consent recorded in prototype')">Give consent</button> <button class="btn secondary" onclick="toast('No data shared')">Not now</button></div></div>
+    </div>
+    <div class="card"><h2 style="margin-top:0">Consent ledger</h2><div class="service"><div><h3>Scholarship eligibility</h3><p>Income record • purpose limited • expires in 30 days</p></div><span class="badge">Active</span></div><div class="service"><div><h3>Identity verification</h3><p>Identity record • one-time verification</p></div><span class="badge">One-time</span></div><button class="btn secondary" onclick="toast('Consent dashboard opened')">Manage consent</button></div>
+  </div>
+</section>
+
+<section id="grievance" class="page">
+  <div class="hero"><h1>Grievance AI Triage</h1><p>Classify incoming complaints, detect duplicate/related cases, suggest routing and keep a human officer in the approval loop.</p></div>
+  <div class="grid two">
+    <div class="card"><h2 style="margin-top:0">New grievance</h2><textarea id="grievanceText" style="width:100%;height:145px;border:1px solid var(--line);border-radius:9px;padding:12px;resize:vertical" placeholder="Paste a citizen complaint...">My water connection application has been pending for 26 days and nobody has updated me.</textarea><div style="margin-top:12px"><button class="btn" onclick="triage()">Run AI triage</button></div><div id="triageAnswer" class="answer"></div></div>
+    <div class="card"><h2 style="margin-top:0">Human-in-the-loop controls</h2>
+      <div class="service"><div><h3>Explainable classification</h3><p>Show evidence behind category and priority</p></div><span class="badge">Required</span></div>
+      <div class="service"><div><h3>Officer approval</h3><p>AI suggests; authorized staff decides</p></div><span class="badge">Enabled</span></div>
+      <div class="service"><div><h3>Audit trail</h3><p>Record model version, input, action and outcome</p></div><span class="badge">Enabled</span></div>
+      <div class="service"><div><h3>Appeal / correction</h3><p>Citizen or officer can challenge routing</p></div><span class="badge">Enabled</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="governance" class="page">
+  <div class="hero"><h1>Governance Copilot</h1><p>Turn operational data into transparent recommendations while preserving policy authority with public officials.</p></div>
+  <div class="grid three">
+    <div class="card"><div class="eyebrow">POLICY MONITOR</div><h2 style="font-size:18px">Service SLA risk</h2><div class="kpi"><div class="big">17</div><div class="mini">cases at risk</div></div><div class="progress"><div class="bar" style="width:68%"></div></div><p class="subtitle">Suggested action: notify responsible officers and citizens before SLA breach.</p></div>
+    <div class="card"><div class="eyebrow">FAIRNESS</div><h2 style="font-size:18px">Outcome monitoring</h2><div class="kpi"><div class="big">94%</div><div class="mini">coverage</div></div><div class="progress"><div class="bar" style="width:94%"></div></div><p class="subtitle">Compare service outcomes across monitored groups without exposing unnecessary personal data.</p></div>
+    <div class="card"><div class="eyebrow">TRANSPARENCY</div><h2 style="font-size:18px">AI audit readiness</h2><div class="kpi"><div class="big">100%</div><div class="mini">decision logs</div></div><div class="progress"><div class="bar" style="width:100%"></div></div><p class="subtitle">Every AI recommendation links to model version, reason and human action.</p></div>
+  </div>
+  <div class="card section"><h2 style="margin-top:0">Decision record example</h2><table class="table"><tr><th>Field</th><th>Value</th></tr><tr><td>Recommendation</td><td>Route grievance to Ward 12 Water Officer</td></tr><tr><td>Evidence</td><td>42 similar complaints in 14 days + pending SLA</td></tr><tr><td>Model</td><td>JanSetu-Triage v0.1 (prototype)</td></tr><tr><td>Human decision</td><td><span class="badge">Pending approval</span></td></tr></table></div>
+</section>
+
+<section id="analytics" class="page">
+  <div class="hero"><h1>Impact Analytics</h1><p>Measure whether the digital public infrastructure layer actually improves access, speed, transparency and administrative workload.</p></div>
+  <div class="grid three">
+    <div class="card"><div class="label">Citizen wait time</div><div class="num">-31%</div><p class="subtitle">Illustrative prototype metric</p></div>
+    <div class="card"><div class="label">Manual triage workload</div><div class="num">-46%</div><p class="subtitle">Illustrative prototype metric</p></div>
+    <div class="card"><div class="label">First-contact resolution</div><div class="num">+22%</div><p class="subtitle">Illustrative prototype metric</p></div>
+  </div>
+  <div class="card section"><h2 style="margin-top:0">What makes this DPI-ready?</h2>
+    <div class="service"><div><h3>Interoperability</h3><p>API-first service adapters let departments connect without replacing existing systems.</p></div><span class="badge">Open interfaces</span></div>
+    <div class="service"><div><h3>Consent & data minimization</h3><p>Use only the minimum data required for a stated purpose and retain an auditable consent record.</p></div><span class="badge">Privacy by design</span></div>
+    <div class="service"><div><h3>Human accountability</h3><p>AI recommends and explains; authorized officials remain responsible for consequential decisions.</p></div><span class="badge">Human-in-loop</span></div>
+    <div class="service"><div><h3>Multilingual access</h3><p>Citizen-facing interactions can support regional languages and voice interfaces.</p></div><span class="badge">Inclusive</span></div>
+  </div>
+</section>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+}
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2200)}
+function askAI(){document.getElementById('aiAnswer').style.display='block'}
+function triage(){
+ const box=document.getElementById('triageAnswer'); box.style.display='block';
+ box.innerHTML='<strong>AI result: Utility → Water connection</strong><div><b>Priority:</b> High &nbsp; <b>Confidence:</b> 93%</div><div style="margin-top:7px">Reason: 26-day delay + missing status update indicates an SLA-risk service complaint.</div><div style="margin-top:10px"><b>Suggested route:</b> Ward 12 Water Officer</div><div style="margin-top:12px"><button class="btn" onclick="toast(\'Recommendation sent for officer approval\')">Request approval</button> <button class="btn secondary" onclick="toast(\'Flagged for review\')">Flag model result</button></div>';
+}
+</script>
+</body>
+</html>
